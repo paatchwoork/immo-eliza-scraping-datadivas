@@ -1,1 +1,2 @@
-Lea is the best
+
+print('test')
