@@ -2,6 +2,11 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
+
 class PropertyScraper():
 
     def __init__ (self, url: str):
@@ -77,6 +82,14 @@ class PropertyScraper():
         for price in soup.find("span", {"class" : "sr-only"}):
             property_data['Price '] = re.sub(r"€", r"", price)
 
+        # Find the type of sale
+        # Includes four data points : New build, Life annuity sale, Under option, Public sale, Tenement building
+        #for new in soup.find_all("div", {"class" : "flag-list__item flag-list__item--main flag-list__item--new"}):
+        #print(soup.find_all("div", {"class" : "flag-list__item flag-list__item--main flag-list__item--new"}))#, {"class" : "flag-list__text"}))
+        #print(soup.find_all("div", {"class" : "classified-gallery__button"}))
+        #print(soup.prettify())
+        
+
         # Looking at all the listed datas
         for row in soup.find_all("tr"):
             key = row.find("th")
@@ -100,9 +113,34 @@ class PropertyScraper():
         
         return property_data
 
-url = 'https://www.immoweb.be/en/classified/loft/for-sale/verviers/4800/11108048'
+url = 'https://www.immoweb.be/en/classified/house/for-sale/sprimont/4140/11123021'
 
-s1 = PropertyScraper(url)
-resdict = s1.scrape()
-for i in resdict.keys():
-    print(f"{i} : {resdict[i]}")
+#s1 = PropertyScraper(url)
+#resdict = s1.scrape()
+#for i in resdict.keys():
+#    print(f"{i} : {resdict[i]}")
+
+#options.add_argument("--headless")
+#driver = webdriver.Chrome(options = "--headless")
+options = webdriver.ChromeOptions()
+options.add_argument('headless')
+driver = webdriver.Chrome(options = options)
+driver.get(url)
+source = driver.page_source
+driver.quit()
+
+#selesoup = BeautifulSoup(source, features = 'html.parser')
+#selesoup = selesoup.prettify()
+#print(selesoup)
+
+##session = requests.Session().d
+##driver.find_element(By.CSS_SELECTOR, "flag-list__item flag-list__item--main flag-list__item--new")
+#driver.implicitly_wait(2)
+#button = driver.find_element(By.TAG_NAME, 'button')
+#button.click()
+#new = driver.find_element(By.TAG_NAME, 'div')
+#new = driver.find_element(By.CLASS_NAME, 'container-main-content')
+##new = driver.find_element(By.CLASS_NAME, "flag-list__item flag-list__item--main flag-list__item--new")
+#print(type(new))
+#print(new)
+#print(driver.getTitle())
