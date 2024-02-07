@@ -16,32 +16,66 @@ class PropertyScraper():
         soup = BeautifulSoup(self.session.text, 'html.parser')   # Cook the soup
 
         # Initialize the list of the properties
-        property_data ={'Price' : None,
-'Type' : None, #of property (house or apartment)
-'Subtype' : None, #of property (bungalow, chalet, mansion, ...)
-#Type of sale (note: exclude life sales)
-'Bedrooms' : None, # Number of rooms
-'Living area' : None, # (area in m²)
-'Kitchen Type' : None, # Equipped kitchen (0/1)
-'Furnished' : None,
-'How many fireplaces?' : None,# Open fire (0/1)
-'Terrace' : None, # YES/NO   (area in m² or null if no terrace)
-'Garden' : None, # YES/NO   (area in m² or null if no garden)
-'Surface of the plot' : None, # Surface of good
-'Number of frontages' : None, # Number of facades
-'Swimming pool' : None, # (0/1)
-'Building condition' : None} # State of building (new, to be renovated, ...)]
+        property_data ={
+                'Price ' : None,
+                'Type' : None, #of property (house or apartment)
+                'Subtype' : None, #of property (bungalow, chalet, mansion, ...)
+                'Bedrooms' : None, # Number of rooms
+                'Living area' : None, # (area in m²)
+                'Kitchen Type' : None, # Equipped kitchen (0/1)
+                'Furnished' : None,
+                'How many fireplaces?' : None,# Open fire (0/1)
+                'Terrace surface' : None, # YES/NO   (area in m² or null if no terrace)
+                'Garden surface' : None,
+                'Surface of the plot' : None, # Surface of good
+                'Number of frontages' : None, # Number of facades
+                'Swimming pool' : None, # (0/1)
+                'Building condition' : None # State of building (new, to be renovated, ...)]
+                        } 
         
-        # Finding the postal code and the immoweb id from the url
-        property_data['Postal code'] = re.findall(r"/(\d+)",url)[0]
-        property_data['ID'] = re.findall(r"/(\d+)",url)[1]
+        # Scraping some stuff from the url
+        url_list = url.split('/')
+        property_data['Locality'] = url_list[-3].capitalize()
+        property_data['Postal code'] = url_list[-2]
+        property_data['ID'] = url_list[-1]
 
-        # Try to find the price
-        #price = soup.find_all("td", {"class" : "classified__price"})
-        price = soup.find_all("span", {"aria-hidden" : {"true"}})
-        ################################################################## CONTINUE CODE HERE
-        print(price)
-        #property_data['Price'] = price
+        # Property type needs an additionnal processing
+        prop_type = url_list[5].capitalize()
+
+        house_types = ['Bungalow', 
+                'Castle', 
+                'Country-house', 
+                'Apartment-block', 
+                'Town-house', 
+                'Chalet', 
+                'Farmhouse', 
+                'Exceptional-property', 
+                'Mixed-use-building', 
+                'Mansion']
+
+        app_types = ['Ground-floor',
+                'Triplex', 
+                'Penthouse',
+                'Kot', 
+                'Duplex', 
+                'Studio', 
+                'Loft', 
+                'Service-flat']
+
+        if prop_type in house_types:
+            property_data['Type'] = 'House'
+            property_data['Subtype'] = prop_type
+
+        elif prop_type in app_types:
+            property_data['Type'] = 'Appartment'
+            property_data['Subtype'] = prop_type
+
+        else:
+            property_data['Type'] = prop_type
+
+        # Find the price
+        for price in soup.find("span", {"class" : "sr-only"}):
+            property_data['Price '] = re.sub(r"€", r"", price)
 
         # Looking at all the listed datas
         for row in soup.find_all("tr"):
@@ -66,8 +100,7 @@ class PropertyScraper():
         
         return property_data
 
-url = "https://www.immoweb.be/en/classified/house/for-sale/mechelen/2812/11077224"
-url = 'https://www.immoweb.be/en/classified/house/for-sale/ronse/9600/11119431'
+url = 'https://www.immoweb.be/en/classified/loft/for-sale/verviers/4800/11108048'
 
 s1 = PropertyScraper(url)
 resdict = s1.scrape()
