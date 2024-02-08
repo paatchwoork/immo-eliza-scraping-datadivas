@@ -2,7 +2,7 @@ import pickle
 import csv
 import json
 
-from scraper.scraper import ImmoWebScraper
+from src.LinkScraper import ImmoWebScraper
 
 base_url_house = "https://www.immoweb.be/en/search/house/for-sale"
 base_url_apartment = "https://www.immoweb.be/en/search/apartment/for-sale"
