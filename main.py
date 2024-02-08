@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-print('test')
-=======
 import pickle
 import csv
 import json
@@ -35,4 +32,3 @@ def main():
 
 if __name__ == "__main__":
     main
->>>>>>> concurrency_oleh
