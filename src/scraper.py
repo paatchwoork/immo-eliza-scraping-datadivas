@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+import csv
 
 class PropertyScraper():
 
@@ -20,9 +21,12 @@ class PropertyScraper():
 
         # Initialize the list of the properties
         property_data ={
-                'Price ' : None,
+                'ID' : None,
+                'Postal code' : None,
+                'Locality' : None,
                 'Type' : None,
                 'Subtype' : None,
+                'Price ' : None,
                 'Bedrooms' : None,
                 'Living area' : None,
                 'Kitchen Type' : None,
@@ -101,4 +105,10 @@ class PropertyScraper():
             if key_content in property_data.keys():
                 property_data[key_content] = value_content
         
-        return property_data
+        # Print the values in the csv
+        with open('property_data.csv', 'a', newline='') as file:
+            print(f"ID {property_data['ID']}", end=" - ")
+            writer = csv.writer(file)
+            writer.writerow(property_data.values())
+        
+        # return property_data
