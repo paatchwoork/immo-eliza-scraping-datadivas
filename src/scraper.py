@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -10,14 +9,17 @@ from selenium.webdriver.common.by import By
 class PropertyScraper():
 
     def __init__ (self):
+        pass
+      
+    # Cook the soup
+    def scrape(self, url: str):
         self.session = requests.Session().get(url)
-        
+          
         if self.session.status_code != 200:
             print(f"Website could with url {url} couldn't be reached. \
                     Status code {session.get(url).status_code}")
-    
-    # Cook the soup
-    def scrape(self, url: str):
+
+
         soup = BeautifulSoup(self.session.text, 'html.parser')   
 
         # Initialize the list of the properties
