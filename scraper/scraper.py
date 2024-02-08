@@ -9,34 +9,33 @@ from selenium.webdriver.common.by import By
 
 class PropertyScraper():
 
-    def __init__ (self, url: str):
-        self.url = url
-        self.type_of_sale = type_of_sale
+    def __init__ (self):
         self.session = requests.Session().get(url)
         
         if self.session.status_code != 200:
             print(f"Website could with url {url} couldn't be reached. \
                     Status code {session.get(url).status_code}")
     
-    def scrape(self):
-        soup = BeautifulSoup(self.session.text, 'html.parser')   # Cook the soup
+    # Cook the soup
+    def scrape(self, url: str):
+        soup = BeautifulSoup(self.session.text, 'html.parser')   
 
         # Initialize the list of the properties
         property_data ={
                 'Price ' : None,
-                'Type' : None, #of property (house or apartment)
-                'Subtype' : None, #of property (bungalow, chalet, mansion, ...)
-                'Bedrooms' : None, # Number of rooms
-                'Living area' : None, # (area in m²)
-                'Kitchen Type' : None, # Equipped kitchen (0/1)
+                'Type' : None,
+                'Subtype' : None,
+                'Bedrooms' : None,
+                'Living area' : None,
+                'Kitchen Type' : None,
                 'Furnished' : None,
-                'How many fireplaces?' : None,# Open fire (0/1)
-                'Terrace surface' : None, # YES/NO   (area in m² or null if no terrace)
+                'How many fireplaces?' : None,
+                'Terrace surface' : None,
                 'Garden surface' : None,
-                'Surface of the plot' : None, # Surface of good
-                'Number of frontages' : None, # Number of facades
-                'Swimming pool' : None, # (0/1)
-                'Building condition' : None # State of building (new, to be renovated, ...)]
+                'Surface of the plot' : None,
+                'Number of frontages' : None,
+                'Swimming pool' : None,
+                'Building condition' : None
                         } 
         
         # Scraping some stuff from the url
