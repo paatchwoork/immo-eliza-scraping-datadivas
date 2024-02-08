@@ -6,7 +6,7 @@ from scraper.scraper import ImmoWebScraper
 
 base_url_house = "https://www.immoweb.be/en/search/house/for-sale"
 base_url_apartment = "https://www.immoweb.be/en/search/apartment/for-sale"
-total_pages = 3
+total_pages = 333
 
 scraper_house = ImmoWebScraper(base_url_house, total_pages)
 house_urls = scraper_house.get_all_properties_urls()
