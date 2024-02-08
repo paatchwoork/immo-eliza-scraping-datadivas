@@ -3,3 +3,7 @@
 __pycache__
 .venv/
 results/
+property_data.csv
+properties_urls.csv
+properties_urls.pkl
+properties_urls.csv
