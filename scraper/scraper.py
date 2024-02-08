@@ -1,9 +1,9 @@
-from typing import List, Dict
+from typing import List
 
 from bs4 import BeautifulSoup
 import requests
 import time
-import pickle
+
 
 class BaseScraper:
     def __init__(self, base_url: str, total_pages: int) -> None:
@@ -32,19 +32,4 @@ class ImmoWebScraper(BaseScraper):
             properties_urls = self.get_properties_urls(page_url)
             all_properties_urls.extend(properties_urls)
             time.sleep(1)
-        return all_properties_urls
-    
-base_url_house = "https://www.immoweb.be/en/search/house/for-sale"
-base_url_apartment = "https://www.immoweb.be/en/search/apartment/for-sale"
-total_pages = 333
-
-scraper_house = ImmoWebScraper(base_url_house, total_pages)
-house_urls = scraper_house.get_all_properties_urls()  # type: List[str]
-
-scraper_apartment = ImmoWebScraper(base_url_apartment, total_pages)
-apartment_urls = scraper_apartment.get_all_properties_urls()  # type: List[str]
-
-all_properties_urls = house_urls + apartment_urls  # type: List[str]
-
-with open("properties_urls.pkl", "wb") as file:
-    pickle.dump(all_properties_urls, file)
+        return all_properties_urls    
