@@ -5,12 +5,12 @@ import time
 from typing import List
 from queue import Queue 
 from bs4 import BeautifulSoup
+from total import get_total_pages
 
 
 class BaseScraper:
-    def __init__(self, base_url: str, total_pages: int) -> None:
+    def __init__(self, base_url: str) -> None:
         self.base_url = base_url
-        self.total_pages = total_pages
         self.session = requests.Session()
 
     def get_soup(self, url: str) -> BeautifulSoup:
@@ -19,6 +19,10 @@ class BaseScraper:
 
 
 class ImmoWebScraper(BaseScraper):
+    def __init__(self, base_url: str) -> None:
+        super().__init__(base_url)
+        self.total_pages = get_total_pages(self.base_url)
+
     def get_page_url(self, page_number: int) -> str:
         return self.base_url + f"?countries=BE&page={page_number}&orderBy=relevance"
 
@@ -60,4 +64,9 @@ class ImmoWebScraper(BaseScraper):
         for t in threads:
             t.join()
 
-        return self.all_properties_urls  
+        return self.all_properties_urls      
+
+if __name__ == "__main__":
+  base = "https://www.immoweb.be/en/search/apartment/for-sale"
+  scraper = ImmoWebScraper(base)
+  print(scraper.total_pages)

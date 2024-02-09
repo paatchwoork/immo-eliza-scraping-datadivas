@@ -12,14 +12,13 @@ from time import perf_counter
 
 base_url_house = "https://www.immoweb.be/en/search/house/for-sale"
 base_url_apartment = "https://www.immoweb.be/en/search/apartment/for-sale"
-total_pages = 10
 
 start_time = perf_counter()
 
-scraper_house = ImmoWebScraper(base_url_house, total_pages)
+scraper_house = ImmoWebScraper(base_url_house)
 house_urls = scraper_house.get_all_properties_urls()
 
-scraper_apartment = ImmoWebScraper(base_url_apartment, total_pages)
+scraper_apartment = ImmoWebScraper(base_url_apartment)
 apartment_urls = scraper_apartment.get_all_properties_urls()
 
 all_properties_urls = house_urls + apartment_urls
@@ -61,6 +60,3 @@ def main():
 
 if __name__ == "__main__":
     main
-
-
-
