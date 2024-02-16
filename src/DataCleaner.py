@@ -1,6 +1,6 @@
 from urllib.parse import unquote  
-
-property_data = {
+import csv
+data_quality = {
         'ID' :                          0,
         'Postal code' :                 0,
         'Locality' :                    0,
@@ -30,62 +30,65 @@ property_data = {
         'New build' :                   0
         } 
 
+discarded_data= 0
 def clean_up(data): 
-    line_count= 0
+    cleaned_data = []
+    line_count = 0
 
-    print(type(data))
     for row in data:
         if line_count == 0:
             line_count += 1
         else:
-       
-            # print(row["Locality"])  
-            # print(row["Subtype"])  
-            cleanse(row) 
-            analyse_data_quality(row)
-            # print(row)
+            cleaned_row = cleanse(row)
+            analyse_data_quality(cleaned_row)
+            if cleaned_row:  # Only append if row is not discarded
+                cleaned_data.append(cleaned_row)
 
             line_count += 1 
-        # cleanse(row)
-    print(line_count)
-    calculate_percentage(property_data, line_count)    
-    print(property_data)
-    
 
+    calculate_percentage(data_quality, line_count) 
+    data_quality["healthy_data"] = round(percentage(discarded_data, line_count))   
+
+    fieldnames = data_quality.keys()  # Assuming cleaned_data is a list of dictionaries
+    with open("property_data_cleaned.csv", "w", newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(cleaned_data)
+
+    # return cleaned_data
+    return data_quality  
 
 def cleanse(row: dict):
+    global discarded_data
     locality = row["Locality"]
-    post_code= row["Postal code"]
-    # print(row["Subtype"])
-    #Decode encoded url values
+    post_code = row["Postal code"]
+    price = row["Price "]
+
+    # Decode encoded URL values
     if '%' in locality: 
-        # row["Locality"]= unquote(locality)
-        pass
+        row["Locality"] = unquote(locality)
 
-    if len(post_code) > 4: 
-        # row["Locality"]= unquote(locality)
-        # print(post_code)
-        # row= 0
-        # print(row)
-        pass
-
-    if row["Subtype"] == '':
-        # print("empty")
-        pass
+    if len(post_code) > 4 or "From" in price or "Starting" in price: 
+        for key in data_quality.keys():
+            row[key] = ''    
+        discarded_data += 1
+        return None  # Indicate that the row is discarded
+    if row["ID"] != '':
+        return row
 
 
 def analyse_data_quality(row: dict):
+    for keyName in data_quality.keys():
+        if row != None:
+            if row[keyName] == '' or row[keyName] == "Not specified":
+                data_quality[keyName] += 1
 
-    for keyName in property_data.keys():
-        if row[keyName] == '' or row[keyName] == "Not specified" :
-            property_data[keyName] += 1
 
-    
 def calculate_percentage(data, line_count):
     for key in  data.keys():
-        print(data[key])
-        data[key]= round(percentage(data[key], line_count), 2) 
+        data[key] = round(percentage(data[key], line_count), 2) 
 
 
 def percentage(part, whole):
-  return 100 - (100 * float(part)/float(whole))
+    if whole != 0:
+        return 100 - (100 * float(part)/float(whole))
