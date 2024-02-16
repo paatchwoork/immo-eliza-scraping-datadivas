@@ -47,6 +47,7 @@ def clean_up(data):
 
             line_count += 1 
         # cleanse(row)
+    print(line_count)
     calculate_percentage(property_data, line_count)    
     print(property_data)
     
@@ -75,7 +76,6 @@ def cleanse(row: dict):
 
 def analyse_data_quality(row: dict):
 
-    
     for keyName in property_data.keys():
         if row[keyName] == '' or row[keyName] == "Not specified" :
             property_data[keyName] += 1
@@ -83,8 +83,9 @@ def analyse_data_quality(row: dict):
     
 def calculate_percentage(data, line_count):
     for key in  data.keys():
-        key= percentage(data[key], line_count)
+        print(data[key])
+        data[key]= round(percentage(data[key], line_count), 2) 
 
 
 def percentage(part, whole):
-  return 100 * float(part)/float(whole)
+  return 100 - (100 * float(part)/float(whole))
