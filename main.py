@@ -9,10 +9,11 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from src.LinkScraper import ImmoWebScraper
 from time import perf_counter
+from src.DataCleaner import clean_up
 
 base_url_house = "https://www.immoweb.be/en/search/house/for-sale"
 base_url_apartment = "https://www.immoweb.be/en/search/apartment/for-sale"
-total_pages = 10
+total_pages = 2
 
 start_time = perf_counter()
 
@@ -56,11 +57,21 @@ with ThreadPoolExecutor() as pool:
 
 print(f"\nScraped {total_pages * 31} properties {perf_counter() - start_time} seconds.")
 
+#Clean and Data quality analysis
+with open("property_data.csv", "r") as file:
+    data= csv.DictReader(file)
+    clean_data = clean_up(data)
+    print(clean_data)
+
+
+
 def main():
     pass
 
 if __name__ == "__main__":
     main
+
+
 
 
 

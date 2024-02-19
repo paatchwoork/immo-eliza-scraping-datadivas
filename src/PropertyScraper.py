@@ -14,8 +14,9 @@ class PropertyScraper():
         self.session = requests.Session().get(url)
           
         if self.session.status_code != 200:
-            print(f"Website could with url {url} couldn't be reached. \
-                    Status code {session.get(url).status_code}")
+            # print(f"Website could with url {url} couldn't be reached. \
+            #         Status code {session.get(url).status_code}")
+            pass
 
 
         soup = BeautifulSoup(self.session.text, 'html.parser')   
@@ -116,7 +117,7 @@ class PropertyScraper():
                     value_content = 0
 
             if (key_content in property_data.keys()) and (value_content != None):
-                print(f"{key_content} : {value_content}")
+                # print(f"{key_content} : {value_content}")
                 property_data[key_content] = value_content
                 
         # Is it a public sale ?"
@@ -134,7 +135,7 @@ class PropertyScraper():
             
         # Print the values in the csv
         with open('property_data.csv', 'a', newline='') as file:
-            print(f"ID {property_data['ID']}", end=" - ")
+            # print(f"ID {property_data['ID']}", end=" - ")
             writer = csv.writer(file)
             if os.path.getsize('property_data.csv') == 0:
                 writer.writerow(property_data.keys())
@@ -146,4 +147,4 @@ url = 'https://www.immoweb.be/en/classified/house/for-sale/jupille-sur-meuse-lie
 url = 'https://www.immoweb.be/en/classified/house/for-sale/spy/5190/11128708'
 
 PS = PropertyScraper()
-print(PS.scrape(url))
+# print(PS.scrape(url))
