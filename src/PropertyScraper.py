@@ -106,7 +106,7 @@ class PropertyScraper():
                 property_data[key_content] = value_content
         
         # Print the values in the csv
-        with open('property_data.csv', 'a', newline='') as file:
+        with open('property_data.csv', 'a', newline='', encoding='utf-8') as file:
             print(f"ID {property_data['ID']}", end=" - ")
             writer = csv.writer(file)
             writer.writerow(property_data.values())
